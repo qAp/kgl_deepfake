@@ -7,6 +7,7 @@ index = {"html_vid": "00_lookatdata.ipynb",
          "html_vids": "00_lookatdata.ipynb",
          "video2frames": "01a_face_extraction.ipynb",
          "detect_facenet_pytorch": "01a_face_extraction.ipynb",
+         "DetectionPipeline": "02bis_Create_Dataset.ipynb",
          "show_faces": "02bis_Create_Dataset.ipynb",
          "plot_faces": "02bis_Create_Dataset.ipynb"}
 
