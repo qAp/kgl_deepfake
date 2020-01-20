@@ -4,9 +4,12 @@ __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
 index = {"html_vid": "00_lookatdata.ipynb",
          "html_titled_vid": "00_lookatdata.ipynb",
-         "html_vids": "00_lookatdata.ipynb"}
+         "html_vids": "00_lookatdata.ipynb",
+         "show_faces": "02bis_Create_Dataset.ipynb",
+         "plot_faces": "02bis_Create_Dataset.ipynb"}
 
-modules = ["nb_00.py"]
+modules = ["nb_00.py",
+           "nb_02bis.py"]
 
 doc_url = "https://qAp.github.io/kgl_deepfake/"
 
