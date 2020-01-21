@@ -60,49 +60,46 @@ class DetectionPipeline:
                 1 result in upsampling. (default: {None})
         """
         self.detector = detector
-        self.n_frames = n_frames
-        self.batch_size = batch_size
-        self.resize = resize
+        self.n_frames, self.batch_size, self.resize = n_frames, batch_size, resize
 
-    def __call__(self, filename):
+    def __call__(self, filename, label=None, save_dir=None):
         """Load frames from an MP4 video and detect faces.
-
         Arguments:
             filename {str} -- Path to video.
         """
-        # Create video reader and find length
         v_cap = cv2.VideoCapture(filename)
         v_len = int(v_cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
-        # Pick 'n_frames' evenly spaced frames to sample
-        if self.n_frames is None:
-            sample = np.arange(0, v_len)
-        else:
-            sample = np.linspace(0, v_len - 1, self.n_frames).astype(int)
+        if self.n_frames is None: sample = np.arange(0, v_len)
+        else: sample = np.linspace(0, v_len - 1, self.n_frames).astype(int)
 
-        # Loop through frames
         faces = []
-        frames = []
+        idxs, frames = [], []
         for j in range(v_len):
             success = v_cap.grab()
             if j in sample:
-                # Load frame
                 success, frame = v_cap.retrieve()
-                if not success:
-                    continue
+                if not success: continue
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 frame = PIL.Image.fromarray(frame)
 
-                # Resize frame to desired size
                 if self.resize is not None:
                     frame = frame.resize([int(d * self.resize) for d in frame.size])
-                frames.append(frame)
+                idxs.append(j); frames.append(frame)
 
-                # When batch is full, detect faces and reset frame list
                 if len(frames) % self.batch_size == 0 or j == sample[-1]:
-                    faces.extend(self.detector(frames))
-                    frames = []
+                    if save_dir is not None:
+                        save_paths = self.get_savepaths(filename, idxs, label, save_dir)
+                        faces.extend(self.detector(frames, save_path=save_paths))
+                    else: faces.extend(self.detector(frames))
+                    idxs, frames = [], []
 
         v_cap.release()
-
         return torch.stack(faces)
+
+    def get_savepaths(self, filename, idxs, label=None, save_dir=None):
+        if isinstance(filename, str): filename = Path(filename)
+        if save_dir is None: save_dir = Path('./')
+        if label is None: save_paths = [save_dir/f'{filename.stem}_{i:03d}.png' for i in idxs]
+        else: save_paths = [save_dir/f'{filename.stem}_{i:03d}_{label}.png' for i in idxs]
+        return [str(o) for o in save_paths]
