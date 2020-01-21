@@ -95,7 +95,7 @@ class DetectionPipeline:
                     idxs, frames = [], []
 
         v_cap.release()
-        return torch.stack([f for f in faces if f is not None])
+        return faces
 
     def get_savepaths(self, filename, idxs, label=None, save_dir=None):
         if isinstance(filename, str): filename = Path(filename)
