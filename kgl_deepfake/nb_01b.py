@@ -10,7 +10,6 @@ from IPython.display import HTML
 import cv2
 import pandas as pd
 from facenet_pytorch import MTCNN
-from nbdev.export import *
 
 # Cell
 def get_first_face(detector, fn, resize=.5):
