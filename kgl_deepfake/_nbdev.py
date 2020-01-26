@@ -8,13 +8,21 @@ index = {"html_vid": "00_lookatdata.ipynb",
          "video2frames": "01a_face_extraction.ipynb",
          "detect_facenet_pytorch": "01a_face_extraction.ipynb",
          "DetectionPipeline": "02bis_Create_Dataset.ipynb",
+         "get_first_face": "01b_get_one_face.ipynb",
+         "get_has_face": "01b_get_one_face.ipynb",
+         "VideoFaceList": "01b_get_one_face.ipynb",
          "show_faces": "02bis_Create_Dataset.ipynb",
-         "plot_faces": "02bis_Create_Dataset.ipynb"}
+         "plot_faces": "02bis_Create_Dataset.ipynb",
+         "MesoNet": "03_mesonet.ipynb",
+         "FocalLoss": "06_Focal_Loss.ipynb"}
 
 modules = ["nb_00.py",
            "nb_01a.py",
+           "nb_01b.py",
            "nb_02bis_copy1.py",
-           "nb_02bis.py"]
+           "nb_02bis.py",
+           "nb_03.py",
+           "nb_06.py"]
 
 doc_url = "https://qAp.github.io/kgl_deepfake/"
 

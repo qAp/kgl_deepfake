@@ -3,6 +3,16 @@
 __all__ = ['get_first_face', 'get_has_face', 'VideoFaceList']
 
 # Cell
+from fastai.vision import *
+from .nb_00 import *
+from .nb_01 import *
+from IPython.display import HTML
+import cv2
+import pandas as pd
+from facenet_pytorch import MTCNN
+from nbdev.export import *
+
+# Cell
 def get_first_face(detector, fn, resize=.5):
     '''
     Returns the first detected face from a video
