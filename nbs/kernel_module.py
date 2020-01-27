@@ -1,14 +1,14 @@
-import cv2
-import pandas as pd
-import torch.nn as nn
-from fastai.core import *
-import torch.nn.functional as F
+from IPython.display import HTML
 from IPython.display import display, Video, HTML
+from facenet_pytorch import MTCNN
+from fastai.core import *
 from fastai.vision import *
 from tqdm import tqdm
+import cv2
+import pandas as pd
 import time
-from IPython.display import HTML
-from facenet_pytorch import MTCNN
+import torch.nn as nn
+import torch.nn.functional as F
 
 
 def html_vid(fname, **kwargs): return display(Video(fname, **kwargs))
