@@ -30,7 +30,7 @@ def get_first_face(detector, fn, resize=.5):
         if face is not None:
             iframe = i
             break
-        v_cap.release()
+    v_cap.release()
     return iframe, face
 
 # Cell
