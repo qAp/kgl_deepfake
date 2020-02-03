@@ -14,8 +14,9 @@ index = {"html_vid": "00_lookatdata.ipynb",
          "show_faces": "02bis_Create_Dataset.ipynb",
          "plot_faces": "02bis_Create_Dataset.ipynb",
          "MesoNet": "03_mesonet.ipynb",
-         "infer_on_videolist": "04a_classification_videolist.ipynb",
-         "FocalLoss": "06_Focal_Loss.ipynb"}
+         "infer_on_videolist": "07_full_classification.ipynb",
+         "FocalLoss": "06_Focal_Loss.ipynb",
+         "get_annots": "07_full_classification.ipynb"}
 
 modules = ["nb_00.py",
            "nb_01a.py",
@@ -24,7 +25,8 @@ modules = ["nb_00.py",
            "nb_02bis.py",
            "nb_03.py",
            "nb_04a.py",
-           "nb_06.py"]
+           "nb_06.py",
+           "nb_07.py"]
 
 doc_url = "https://qAp.github.io/kgl_deepfake/"
 
