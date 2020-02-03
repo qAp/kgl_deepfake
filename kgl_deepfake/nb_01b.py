@@ -16,6 +16,7 @@ def get_first_face(detector, fn, resize=.5):
     '''
     Returns the first detected face from a video
     '''
+    assert Path(fn).exists()
     v_cap = cv2.VideoCapture(str(fn))
     v_len = int(v_cap.get(cv2.CAP_PROP_FRAME_COUNT))
     iframe, face = None, None
