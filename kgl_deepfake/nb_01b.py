@@ -12,7 +12,7 @@ import pandas as pd
 from facenet_pytorch import MTCNN
 
 # Cell
-def get_first_face(detector, fn, resize=.5):
+def get_first_face(detector, fn, resize=.5, equalize=False):
     '''
     Returns the first detected face from a video
     '''
@@ -24,7 +24,11 @@ def get_first_face(detector, fn, resize=.5):
         _ = v_cap.grab()
         success, frame = v_cap.retrieve()
         if not success: continue
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2YCrCb)
+        if equalize:
+            clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+            frame[:,:,0] = clahe.apply(frame[:,:,0])
+        frame = cv2.cvtColor(frame, cv2.COLOR_YCrCb2RGB)
         frame = PIL.Image.fromarray(frame)
         if resize is not None: frame = frame.resize([int(d * resize) for d in frame.size])
         face = detector(frame)
