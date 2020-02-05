@@ -49,13 +49,12 @@ def get_has_face(fnames, detector):
 
 # Cell
 class VideoFaceList(ImageList):
-    def __init__(self, *args, **kwargs):
-        device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
-        detector = MTCNN(device=device, post_process=False, select_largest=False, margin=0)
-        self.detector = detector
-        self.resize = .5
-        self.equalize = True
+    def __init__(self, *args, detector=None, device=None, resize=.5, equalize=True, **kwargs):
         super().__init__(*args, **kwargs)
+        if device is None: device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+        if detector is None: detector = MTCNN(device=device, post_process=False, select_largest=False, margin=0)
+        self.detector, self.resize, self.equalize = detector, resize, equalize
+        self.copy_new.extend(['detector', 'resize', 'equalize'])
 
     def get_face(self, fn:Path):
         iframe, face = get_first_face(self.detector, fn, self.resize, self.equalize)
