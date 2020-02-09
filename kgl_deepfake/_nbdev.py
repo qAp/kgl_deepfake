@@ -5,30 +5,25 @@ __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 index = {"html_vid": "00_lookatdata.ipynb",
          "html_titled_vid": "00_lookatdata.ipynb",
          "html_vids": "00_lookatdata.ipynb",
-         "video2frames": "01a_face_extraction.ipynb",
-         "detect_facenet_pytorch": "01a_face_extraction.ipynb",
-         "DetectionPipeline": "face_detection.ipynb",
-         "get_first_face": "face_detection.ipynb",
-         "get_has_face": "01b_get_one_face.ipynb",
-         "VideoFaceList": "face_detection.ipynb",
+         "get_annots": "07_full_classification.ipynb",
+         "DetectionPipeline": "02bis_Create_Dataset.ipynb",
+         "get_first_face": "02_fix_luminosity.ipynb",
+         "VideoFaceList": "01_face_detection.ipynb",
          "show_faces": "02bis_Create_Dataset.ipynb",
          "plot_faces": "02bis_Create_Dataset.ipynb",
          "MesoNet": "03_mesonet.ipynb",
          "infer_on_videolist": "07_full_classification.ipynb",
-         "FocalLoss": "06_Focal_Loss.ipynb",
-         "get_annots": "07_full_classification.ipynb"}
+         "FocalLoss": "06_Focal_Loss.ipynb"}
 
-modules = ["nb_00.py",
-           "nb_01a.py",
-           "nb_01b.py",
+modules = ["data.py",
+           "nb_00.py",
+           "face_detection.py",
            "nb_02.py",
-           "nb_02bis_copy1.py",
            "nb_02bis.py",
            "nb_03.py",
            "nb_04a.py",
            "nb_06.py",
-           "nb_07.py",
-           "face_detection.py"]
+           "nb_07.py"]
 
 doc_url = "https://qAp.github.io/kgl_deepfake/"
 
