@@ -58,4 +58,4 @@ def get_annots(SOURCE):
             annots.append(a)
 
 
-    return pd.concat(annots)
+    return pd.concat(annots).reset_index(drop=True)
