@@ -2,25 +2,25 @@
 
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
-index = {"html_vid": "00_lookatdata.ipynb",
-         "html_titled_vid": "00_lookatdata.ipynb",
-         "html_vids": "00_lookatdata.ipynb",
+index = {"html_vid": "00_data.ipynb",
+         "html_titled_vid": "00_data.ipynb",
+         "html_vids": "00_data.ipynb",
          "get_annots": "07_full_classification.ipynb",
          "DetectionPipeline": "02bis_Create_Dataset.ipynb",
+         "plt_frames_faces": "01_face_detection.ipynb",
          "get_first_face": "02_fix_luminosity.ipynb",
          "VideoFaceList": "01_face_detection.ipynb",
          "show_faces": "02bis_Create_Dataset.ipynb",
          "plot_faces": "02bis_Create_Dataset.ipynb",
-         "MesoNet": "03_mesonet.ipynb",
+         "MesoNet": "03_models.ipynb",
          "infer_on_videolist": "07_full_classification.ipynb",
          "FocalLoss": "06_Focal_Loss.ipynb"}
 
 modules = ["data.py",
-           "nb_00.py",
            "face_detection.py",
            "nb_02.py",
            "nb_02bis.py",
-           "nb_03.py",
+           "models.py",
            "nb_04a.py",
            "nb_06.py",
            "nb_07.py"]
