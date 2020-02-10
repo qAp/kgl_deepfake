@@ -55,7 +55,7 @@ def get_annots(SOURCE):
             a.reset_index(inplace=True)
             a.rename({'index':'fname'}, axis=1, inplace=True)
             a.fname = i.name + '/' + a.fname.astype(str)
+            a.loc[a.label=='FAKE', 'original'] = i.name + '/' + a.original[a.label=='FAKE']
+
             annots.append(a)
-
-
     return pd.concat(annots).reset_index(drop=True)
