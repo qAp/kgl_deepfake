@@ -16,6 +16,9 @@ __pycache__/
 *$py.class
 
 data/*
+# Ignore DSFD weights
+face_detection/dsfd/weights/*
+
 # C extensions
 *.so
 
