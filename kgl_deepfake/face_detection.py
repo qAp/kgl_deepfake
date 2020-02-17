@@ -159,3 +159,12 @@ class VideoFaceList(ImageList):
     def open(self, fn:Path):
         iframe, face = self.get_face(fn)
         return Image(face / 255)
+
+    @classmethod
+    def from_df(cls, *args, df:DataFrame=None, path:PathOrStr=None, cols:str=None, **kwargs):
+        fexists = df[cols].apply(lambda o: (Path(path)/o).exists())
+        if sum(fexists) < len(df):
+            print('WARNING: the following files cannot be found, leaving them out.')
+            print(df[~fexists])
+        df = df[fexists]
+        return super().from_df(*args, df=df, path=path, cols=cols, **kwargs)
