@@ -70,7 +70,7 @@ class EasyRetinaFace:
         landms = landms.cpu().numpy()
 
         # ignore low scores
-        DEFAULT_CONFIDENCE_THRESH = 0.02
+        DEFAULT_CONFIDENCE_THRESH = 0.9
         inds = np.where(scores > DEFAULT_CONFIDENCE_THRESH)[0]
         boxes = boxes[inds]
         landms = landms[inds]
