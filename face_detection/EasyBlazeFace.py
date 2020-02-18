@@ -424,6 +424,45 @@ class EasyBlazeFace:
         self.detector.load_anchors(anchors)
 
     def detect(self, frame):
-        predictions = self.detector.predict_on_image(cv2.resize(frame, (128, 128)))
-        return predictions
+
+        # The detections we get back from BlazeFace have two problems:
+        # 1. They're formatted differently than what we'd like
+        # 2. They were made on a square image, which distorts the bounding box
+        detections = self.detector.predict_on_image(cv2.resize(frame, (128, 128)))
+
+        formatted_detections = []
+
+        for detection in detections:
+            y_min, x_min, y_max, x_max, *_ = detection
+            probability = detection[-1]
+
+            # We need, center height and width
+            height_ratio = ((frame.shape[0] / frame.shape[1]) + 1) / 2
+            width_ratio = ((frame.shape[1] / frame.shape[0]) + 1) / 2
+
+            center_y = (y_max + y_min) / 2
+            center_x = (x_min + x_max) / 2
+
+            width = x_max - x_min
+            height = y_max - y_min
+
+            height = (1 / height_ratio) * height  # undo the original height change
+            width = (1 / width_ratio) * width  # undo the original width change
+
+            # Center is the same, height and width are adjusted by the ratio
+            y_min = center_y - (height / 2)
+            y_max = center_y + (height / 2)
+
+            x_min = center_x - (width / 2)
+            x_max = center_x + (width / 2)
+
+            y_min = int(max(0, y_min * frame.shape[0]))  # Don't try to crop less than 0
+            x_min = int(max(0, x_min * frame.shape[1]))  # Don't try to crop less than 0
+            y_max = int(min(frame.shape[0], y_max * frame.shape[0]))
+            x_max = int(min(frame.shape[1], x_max * frame.shape[1]))
+
+            # Correct formatting order
+            formatted_detections.append([x_min, y_min, x_max, y_max, probability])
+
+        return np.array(formatted_detections)
 
