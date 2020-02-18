@@ -18,6 +18,8 @@ class EasyMTCNN:
     def detect(self, frame):
         img = PIL.Image.fromarray(frame)
         detections, probabilities = self.detector.detect(img)
+        if detections is None or len(detections) == 0:
+            return np.array([])
         dets_with_probs = np.append(detections, np.expand_dims(probabilities, axis=1), axis=1)
         return dets_with_probs
 
