@@ -456,10 +456,10 @@ class EasyBlazeFace:
             x_min = center_x - (width / 2)
             x_max = center_x + (width / 2)
 
-            y_min = int(max(0, y_min * frame.shape[0]))  # Don't try to crop less than 0
-            x_min = int(max(0, x_min * frame.shape[1]))  # Don't try to crop less than 0
-            y_max = int(min(frame.shape[0], y_max * frame.shape[0]))
-            x_max = int(min(frame.shape[1], x_max * frame.shape[1]))
+            y_min = max(0, y_min * frame.shape[0])  # Don't try to crop less than 0
+            x_min = max(0, x_min * frame.shape[1])  # Don't try to crop less than 0
+            y_max = min(frame.shape[0], y_max * frame.shape[0])
+            x_max = min(frame.shape[1], x_max * frame.shape[1])
 
             # Correct formatting order
             formatted_detections.append([x_min, y_min, x_max, y_max, probability])
