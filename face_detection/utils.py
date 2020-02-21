@@ -35,6 +35,9 @@ def read_all_frames(video_path):
 
 
 def read_random_frame(video_path):
+    """
+    Read a random frame from any point in the video.
+    """
     capture = cv2.VideoCapture(str(video_path))
     frame_count = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
     random_frame = int(random.random() * frame_count)
@@ -47,6 +50,10 @@ def read_random_frame(video_path):
 
 
 def read_random_sequential_frames(video_path, num_frames=4):
+    """
+    Starting at a random point in the video, read {num_frames} frames and return
+    as a single numpy array
+    """
 
     capture = cv2.VideoCapture(str(video_path))
     frame_count = int(capture.get(cv2.CAP_PROP_FRAME_COUNT)) - num_frames
@@ -60,4 +67,4 @@ def read_random_sequential_frames(video_path, num_frames=4):
         frames.append(frame)
 
     capture.release()
-    return frames
+    return np.array(frames)
