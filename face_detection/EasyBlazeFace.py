@@ -435,7 +435,10 @@ class EasyBlazeFace:
 
         for frame, detections in zip(frames, batch_detections):
             formatted_detections = EasyBlazeFace._format_detections(detections, frame.shape[0], frame.shape[1])
-            all_formatted_detections.append(formatted_detections)
+
+            # NOTE: Only add the detections if there are any
+            if not formatted_detections.size == 0:
+                all_formatted_detections.append(formatted_detections)
 
         return all_formatted_detections
 
@@ -487,4 +490,3 @@ class EasyBlazeFace:
             formatted_detections.append([x_min, y_min, x_max, y_max, probability])
 
         return np.array(formatted_detections)
-
