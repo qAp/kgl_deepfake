@@ -25,6 +25,21 @@ class EasyRetinaFace:
         self.net = self.net.eval()
         self.net = self.net.cuda()
 
+    def detect_on_multiple_frames(self, frames):
+        """
+        Get detections from multiple frames.
+
+        NOTE: This does not run in parallel, it simply calls self.detect() sequentially
+        This is because with the default image size, we can't predict more than 2 images at a time. :(
+        """
+
+        detections = []
+        for frame in frames:
+            current_detections = self.detect(frame)
+            detections.append(current_detections)
+
+        return detections
+
     def detect(self, frame):
         """
         Get the detections for a single frame
@@ -40,6 +55,7 @@ class EasyRetinaFace:
         if np.round(resize * im_size_max) > max_size:
             resize = float(max_size) / float(im_size_max)
 
+        resize = 1 # HACK: Disable resizing
         if resize != 1:
             img = cv2.resize(img, None, None, fx=resize, fy=resize, interpolation=cv2.INTER_LINEAR)
 
@@ -94,7 +110,6 @@ class EasyRetinaFace:
         # keep top-K faster NMS
         # dets = dets[:args.keep_top_k, :]
         # landms = landms[:args.keep_top_k, :]
-
 
         return dets
 
