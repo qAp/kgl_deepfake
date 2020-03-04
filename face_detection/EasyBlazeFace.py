@@ -437,8 +437,7 @@ class EasyBlazeFace:
             formatted_detections = EasyBlazeFace._format_detections(detections, frame.shape[0], frame.shape[1])
 
             # NOTE: Only add the detections if there are any
-            if not formatted_detections.size == 0:
-                all_formatted_detections.append(formatted_detections)
+            all_formatted_detections.append(formatted_detections)
 
         return all_formatted_detections
 
@@ -450,10 +449,10 @@ class EasyBlazeFace:
         detections = self.detector.predict_on_image(cv2.resize(frame, (128, 128)))
 
         formatted_detections = EasyBlazeFace._format_detections(detections, frame.shape[0], frame.shape[1])
-        return formatted_detections
+        return np.array([formatted_detections])
 
     @staticmethod
-    def _format_detections(detections, frame_height, frame_width):
+    def _format_detections(detections, frame_height, frame_width, num_frames=1):
 
         formatted_detections = []
 
