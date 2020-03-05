@@ -413,7 +413,6 @@ def overlap_similarity(box, other_boxes):
     return jaccard(box.unsqueeze(0), other_boxes).squeeze(0)
 
 
-
 class EasyBlazeFace:
 
     def __init__(self, weights="blazeface.pth", anchors="anchors.npy"):
@@ -423,12 +422,37 @@ class EasyBlazeFace:
         self.detector.load_weights(weights)
         self.detector.load_anchors(anchors)
 
+    def detect_on_multiple_frames(self, frames):
+
+        resized_frames = np.zeros((len(frames), 128, 128, 3))
+
+        # Resize all frames to 128x128
+        for i, frame in enumerate(frames):
+            resized_frames[i] = cv2.resize(frame, (128, 128))
+
+        batch_detections = self.detector.predict_on_batch(resized_frames)
+        all_formatted_detections = []
+
+        for frame, detections in zip(frames, batch_detections):
+            formatted_detections = EasyBlazeFace._format_detections(detections, frame.shape[0], frame.shape[1])
+
+            # NOTE: Only add the detections if there are any
+            all_formatted_detections.append(formatted_detections)
+
+        return all_formatted_detections
+
     def detect(self, frame):
 
         # The detections we get back from BlazeFace have two problems:
         # 1. They're formatted differently than what we'd like
         # 2. They were made on a square image, which distorts the bounding box
         detections = self.detector.predict_on_image(cv2.resize(frame, (128, 128)))
+
+        formatted_detections = EasyBlazeFace._format_detections(detections, frame.shape[0], frame.shape[1])
+        return np.array([formatted_detections])
+
+    @staticmethod
+    def _format_detections(detections, frame_height, frame_width, num_frames=1):
 
         formatted_detections = []
 
@@ -437,8 +461,8 @@ class EasyBlazeFace:
             probability = detection[-1]
 
             # We need, center height and width
-            height_ratio = ((frame.shape[0] / frame.shape[1]) + 1) / 2
-            width_ratio = ((frame.shape[1] / frame.shape[0]) + 1) / 2
+            height_ratio = ((frame_height / frame_width) + 1) / 2
+            width_ratio = ((frame_width / frame_height) + 1) / 2
 
             center_y = (y_max + y_min) / 2
             center_x = (x_min + x_max) / 2
@@ -456,13 +480,12 @@ class EasyBlazeFace:
             x_min = center_x - (width / 2)
             x_max = center_x + (width / 2)
 
-            y_min = max(0, y_min * frame.shape[0])  # Don't try to crop less than 0
-            x_min = max(0, x_min * frame.shape[1])  # Don't try to crop less than 0
-            y_max = min(frame.shape[0], y_max * frame.shape[0])
-            x_max = min(frame.shape[1], x_max * frame.shape[1])
+            y_min = max(0, y_min * frame_height)  # Don't try to crop less than 0
+            x_min = max(0, x_min * frame_width)  # Don't try to crop less than 0
+            y_max = min(frame_height, y_max * frame_height)
+            x_max = min(frame_width, x_max * frame_width)
 
             # Correct formatting order
             formatted_detections.append([x_min, y_min, x_max, y_max, probability])
 
         return np.array(formatted_detections)
-
