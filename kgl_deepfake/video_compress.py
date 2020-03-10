@@ -150,7 +150,10 @@ def compress_vids(cvant, dir_out='compressed_videos'):
     cvant['fname_cv'] = cvant.fname.apply(lambda o: dir_out/o.name)
     pb = progress_bar(list(cvant.iterrows()))
     for _, r in pb:
-        run_ffmpeg(fpath_from=r.fname, fpath_to=r.fname_cv, **ENC_DICT[r.enc])
+        if r.enc=='None':
+            shutil.copy(r.fname, r.fname_cv)
+        else:
+            run_ffmpeg(fpath_from=r.fname, fpath_to=r.fname_cv, **ENC_DICT[r.enc])
         pb.comment = f'{r.fname.name} {r.enc}'
     cvant.to_csv(dir_out/'metadata.csv', index=False)
     return cvant
