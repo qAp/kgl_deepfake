@@ -99,7 +99,7 @@ def sort_boxc(df):
     return df
 
 # Cell
-box_procs = [filter_by_prob, add_box_area, filter_by_area, add_box_center, sort_boxc]
+box_procs = [filter_by_prob, add_box_area, add_box_center, sort_boxc]
 
 # Cell
 def process_boxs(df):
