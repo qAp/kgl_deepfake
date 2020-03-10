@@ -80,7 +80,8 @@ def annots2facedf(annot, detect, iframes=None, proc_boxs=True, inner_ff=True):
     pb = progress_bar(annot.groupby('original'))
     for fno, ann in pb:
         fnfs = [r.fname for _, r in ann.iterrows()]
-        df = origfake_facedf(fno, fnfs, detect, iframes=iframes, proc_boxs=proc_boxs, inner_ff=inner_ff)
+        ifrms = iframes(ann.iloc[0]) if callable(iframes) else iframes
+        df = origfake_facedf(fno, fnfs, detect, proc_boxs=proc_boxs, inner_ff=inner_ff, iframes=ifrms)
         dfs.append(df)
         pb.comment = f'Original {fno}. Number of FAKEs: {len(ann)}'
     return pd.concat(dfs).reset_index(drop=True)
