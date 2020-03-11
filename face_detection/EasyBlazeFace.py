@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
 from pathlib import Path
+from video_utils import nms
 
 
 class BlazeBlock(nn.Module):
@@ -470,8 +471,11 @@ class EasyBlazeFace:
             width = x_max - x_min
             height = y_max - y_min
 
-            height = (1 / height_ratio) * height  # undo the original height change
-            width = (1 / width_ratio) * width  # undo the original width change
+            height = (1 / height_ratio) * height    # undo the original height change
+            width = (1 / width_ratio) * width       # undo the original width change
+
+            height = height * 1.2                   # increase height by 20%
+            width = width * 1.2                     # increase width by 20%
 
             # Center is the same, height and width are adjusted by the ratio
             y_min = center_y - (height / 2)
@@ -489,3 +493,99 @@ class EasyBlazeFace:
             formatted_detections.append([x_min, y_min, x_max, y_max, probability])
 
         return np.array(formatted_detections)
+
+    def get_detections_with_multiple_crops(self, frames):
+
+        if len(frames.shape) < 3 or len(frames.shape) > 4:
+            raise Exception("Expected {frames} to have 3 or 4 dimensions. Got: {} dimensions.".format(len(frames.shape)))
+        elif len(frames.shape) == 3:
+            frames = np.expand_dims(frames, axis=0)
+
+        all_dets = []
+        # frames = read_random_frames(video_path, num_frames=num_frames)
+        # TODO: Handle errors reading frames
+        height, width, _ = frames[0].shape
+
+        if height == width:
+            # If it's a square video just predict on it directly
+            dets = self.detect_on_multiple_frames(frames)
+            return dets
+
+        elif height > width:
+            # If it's a vertical video, take three crops
+            top = frames[:, :width, :, :]
+            center = frames[:, height // 2 - width // 2:height // 2 + width // 2, :, :]
+            bottom = frames[:, -width:, :, :]
+
+            top_dets = self.detect_on_multiple_frames(top)
+            center_dets = self.detect_on_multiple_frames(center)
+            bottom_dets = self.detect_on_multiple_frames(bottom)
+
+            for t_dets, c_dets, b_dets in zip(top_dets, center_dets, bottom_dets):
+                frame_dets = []
+
+                # Add top detections for this frame
+                for x_min, y_min, x_max, y_max, prob in t_dets:
+                    frame_dets.append([float(x_min), float(y_min), float(x_max), float(y_max), float(prob)])
+
+                # Add center detections for this frame
+                # Make sure to account for vertical shift
+                for x_min, y_min, x_max, y_max, prob in c_dets:
+                    offset = height // 2 - width // 2
+                    frame_dets.append(
+                        [float(x_min), float(y_min + offset), float(x_max), float(y_max + offset), float(prob)])
+
+                # Add bottom detections for this frame
+                # Make sure to account for vertical shift
+                for x_min, y_min, x_max, y_max, prob in b_dets:
+                    offset = height - width
+                    frame_dets.append(
+                        [float(x_min), float(y_min + offset), float(x_max), float(y_max + offset), float(prob)])
+
+                frame_dets = np.array(frame_dets)
+                if len(frame_dets) > 0:
+                    inds = nms(frame_dets, 0.5)
+                    frame_dets = frame_dets[inds]
+
+                all_dets.append(frame_dets)
+
+        elif height < width:
+            # If it's a horizontal video, take three crops
+            left = frames[:, :, :height, :]
+            center = frames[:, :, width // 2 - height // 2:width // 2 + height // 2, :]
+            right = frames[:, :, -height:, :]
+
+            left_dets = self.detect_on_multiple_frames(left)
+            center_dets = self.detect_on_multiple_frames(center)
+            right_dets = self.detect_on_multiple_frames(right)
+
+            for l_dets, c_dets, r_dets in zip(left_dets, center_dets, right_dets):
+                frame_dets = []
+
+                # Add left detections for this frame
+                for x_min, y_min, x_max, y_max, prob in l_dets:
+                    frame_dets.append([float(x_min), float(y_min), float(x_max), float(y_max), float(prob)])
+
+                # Add center detections for this frame
+                # Make sure to account for left shift
+                for x_min, y_min, x_max, y_max, prob in c_dets:
+                    offset = width // 2 - height // 2
+                    frame_dets.append(
+                        [float(x_min + offset), float(y_min), float(x_max + offset), float(y_max), float(prob)])
+
+                # Add right detections for this frame
+                # Make sure to account for left shift
+                for x_min, y_min, x_max, y_max, prob in r_dets:
+                    offset = width - height
+                    frame_dets.append(
+                        [float(x_min + offset), float(y_min), float(x_max + offset), float(y_max), float(prob)])
+
+                frame_dets = np.array(frame_dets)
+
+                if len(frame_dets) > 0:
+                    inds = nms(frame_dets, 0.5)
+                    frame_dets = frame_dets[inds]
+
+                all_dets.append(frame_dets)
+
+        return all_dets

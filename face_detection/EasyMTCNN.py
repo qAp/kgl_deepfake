@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 from pathlib import Path
 from facenet_pytorch import MTCNN
-from utils import read_frame
+from video_utils import read_frame
 
 
 class EasyMTCNN:
