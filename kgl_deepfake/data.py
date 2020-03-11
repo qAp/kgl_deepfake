@@ -5,7 +5,7 @@ __all__ = ['html_vid', 'html_titled_vid', 'html_vids', 'get_annots']
 # Cell
 from fastai.vision import *
 import pandas as pd
-from IPython.display import display, Video, HTML
+from IPython.display import display, HTML
 
 # Cell
 def html_vid(fname):
