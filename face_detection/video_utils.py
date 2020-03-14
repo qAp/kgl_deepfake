@@ -40,6 +40,27 @@ def read_all_frames(video_path):
     return np.array(all_frames)
 
 
+def read_frames(video_path, start=0, end=16):
+    capture = cv2.VideoCapture(str(video_path))
+    frame_count = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
+    end = min(frame_count, end)
+
+    capture.set(cv2.CAP_PROP_POS_FRAMES, start)
+
+    frames = []
+    for i in range(start, end):
+        success, frame = capture.read()
+        if not success:
+            # If we couldn't read a frame, just continue
+            continue
+
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        frames.append(frame)
+
+    capture.release()
+    return np.array(frames)
+
+
 def read_all_frames_as_square_crops(video_path):
     capture = cv2.VideoCapture(str(video_path))
     all_frames = []
@@ -73,6 +94,7 @@ def get_height_and_width_of_video(video_path):
 
     return height, width
 
+
 def read_random_frames(video_path, num_frames=1):
     """
     Read {num_frames} random frames from any point in the video.
@@ -84,6 +106,7 @@ def read_random_frames(video_path, num_frames=1):
         frames.append(frame)
 
     return np.array(frames)
+
 
 def read_random_frame(video_path):
     """
