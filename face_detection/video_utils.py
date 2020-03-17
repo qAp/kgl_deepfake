@@ -2,9 +2,13 @@ import cv2
 import torch
 import random
 import numpy as np
+import pandas as pd
 
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+
+from pathlib import Path
+from tqdm.notebook import tqdm
 
 
 def read_frame_as_size(video_path, size=(128, 128)):
@@ -165,11 +169,13 @@ def plot_detections(img, detections, with_keypoints=True, figsize=(10, 10)):
 
     print("Found %d faces" % len(detections))
 
+    height, width, c = img.shape
+
     for i in range(len(detections)):
-        xmin = detections[i, 0]
-        ymin = detections[i, 1]
-        xmax = detections[i, 2]
-        ymax = detections[i, 3]
+        xmin = max(0, detections[i, 0])
+        ymin = max(0, detections[i, 1])
+        xmax = min(width, detections[i, 2])
+        ymax = min(width, detections[i, 3])
 
         rect = patches.Rectangle((xmin, ymin), xmax - xmin, ymax - ymin,
                                  linewidth=1, edgecolor="r", facecolor="none")
@@ -219,3 +225,23 @@ def nms(dets, thresh):
         order = order[inds + 1]
 
     return keep
+
+
+def load_all_metadata():
+    # Join metadata files into single dataframe
+    metadata_list = []
+
+    for i in tqdm(range(50)):
+        folder = Path("../data/dfdc_train_part_" + str(i))
+        metadata_file_path = folder/'metadata.json'
+        metadata = pd.read_json(metadata_file_path).T
+
+        metadata.reset_index(inplace=True)
+        metadata.rename({'index' : 'fname'}, axis=1, inplace=True)
+
+        metadata['directory'] =  str(folder)
+
+        metadata_list.append(metadata)
+
+    all_metadata = pd.concat(metadata_list)
+    return all_metadata
