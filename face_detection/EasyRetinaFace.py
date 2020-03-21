@@ -112,5 +112,30 @@ class EasyRetinaFace:
         # dets = dets[:args.keep_top_k, :]
         # landms = landms[:args.keep_top_k, :]
 
-        return dets
+        # Rescale dets by 120%
+        x_min = dets[:, 0]
+        y_min = dets[:, 1]
+        x_max = dets[:, 2]
+        y_max = dets[:, 3]
 
+        center_y = (y_max + y_min) / 2
+        center_x = (x_min + x_max) / 2
+
+        width = x_max - x_min
+        height = y_max - y_min
+
+        height = height * 1.2   # increase height by 20%
+        width = width * 1.2     # increase width by 20%
+
+        y_min = center_y - (height / 2)
+        y_max = center_y + (height / 2)
+
+        x_min = center_x - (width / 2)
+        x_max = center_x + (width / 2)
+
+        dets[:, 0] = x_min
+        dets[:, 1] = y_min
+        dets[:, 2] = x_max
+        dets[:, 3] = y_max
+
+        return dets
