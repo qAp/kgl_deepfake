@@ -55,7 +55,8 @@ class EasyRetinaFace:
         if np.round(resize * im_size_max) > max_size:
             resize = float(max_size) / float(im_size_max)
 
-        resize = 1 # HACK: Disable resizing
+        # Only resize if the image is bigger than we can handle
+        resize = min(1.0, resize)
         if resize != 1:
             img = cv2.resize(img, None, None, fx=resize, fy=resize, interpolation=cv2.INTER_LINEAR)
 
@@ -112,9 +113,4 @@ class EasyRetinaFace:
         # landms = landms[:args.keep_top_k, :]
 
         return dets
-
-
-
-
-
 
