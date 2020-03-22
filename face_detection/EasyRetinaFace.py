@@ -19,6 +19,7 @@ class EasyRetinaFace:
 
     def __init__(self, path='Pytorch_Retinaface/weights/Resnet50_Final.pth'):
         self.cfg = cfg_re50
+        self.cfg['pretrain'] = False  # Don't download pretrained ImageNet weights
         self.net = RetinaFace(cfg=self.cfg, phase='test')
         # Download weights from Google Drive. See repo for details: https://github.com/biubug6/Pytorch_Retinaface
         self.net = load_model(self.net, path, load_to_cpu=False)
