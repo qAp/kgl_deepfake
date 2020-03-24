@@ -7,15 +7,15 @@ __all__ = ['COLS_BOX', 'COLS_PROB', 'COLS_ANT', 'box2facedf', 'vid2frames', 'vid
 
 # Cell
 import sys
-sys.path.append('../face_detection')
+# sys.path.append('../face_detection')
 from IPython.display import *
 from fastai.core import *
 from fastai.vision import *
 from facenet_pytorch import *
 from tqdm.notebook import tqdm
 import mmcv, cv2
-from EasyMTCNN import EasyMTCNN
-from EasyRetinaFace import EasyRetinaFace
+# from EasyMTCNN import EasyMTCNN
+from .EasyRetinaFace import EasyRetinaFace
 from .data import *
 from .video_compress import *
 import holoviews as hv
