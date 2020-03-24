@@ -55,7 +55,7 @@ cfg_re50 = {
 import cv2
 import numpy as np
 import random
-from Pytorch_Retinaface.utils.box_utils import matrix_iof
+from .utils.box_utils import matrix_iof
 
 
 def _crop(image, boxes, labels, landm, img_dim):
