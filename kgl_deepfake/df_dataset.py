@@ -5,13 +5,12 @@ __all__ = ['align_frameface', 'stack_origfake_facedfs', 'origfake_facedf', 'anno
 
 # Cell
 import sys
-sys.path.append('../face_detection')
 import IPython.display as display
 from fastai.core import *
 from fastai.vision import *
 from facenet_pytorch import *
-from EasyMTCNN import EasyMTCNN
-from EasyRetinaFace import EasyRetinaFace
+#from EasyMTCNN import EasyMTCNN
+from .EasyRetinaFace import EasyRetinaFace
 import cv2, mmcv
 import holoviews as hv
 from .data import *
