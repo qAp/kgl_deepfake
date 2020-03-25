@@ -26,7 +26,7 @@ class EasyRetinaFace:
         self.net = self.net.to(self.device)
 
 
-    def detect_on_multiple_frames(self, frames):
+    def detect_on_multiple_frames(self, frames, scale_bbox=1.2):
         """
         Get detections from multiple frames.
 
@@ -36,12 +36,12 @@ class EasyRetinaFace:
 
         detections = []
         for frame in frames:
-            current_detections = self.detect(frame)
+            current_detections = self.detect(frame, scale_bbox=scale_bbox)
             detections.append(current_detections)
 
         return detections
 
-    def detect(self, frame, scale_bbox=1):
+    def detect(self, frame, scale_bbox=1.2):
         """
         Get the detections for a single frame
         """
