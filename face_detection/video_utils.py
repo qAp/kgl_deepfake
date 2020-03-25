@@ -99,25 +99,27 @@ def get_height_and_width_of_video(video_path):
     return height, width
 
 
-def read_random_frames(video_path, num_frames=1):
+def read_random_frames(video_path, num_frames=1, frame_count=None):
     """
     Read {num_frames} random frames from any point in the video.
     """
     frames = []
 
     for i in range(num_frames):
-        frame = read_random_frame(video_path)
+        frame = read_random_frame(video_path, frame_count)
         frames.append(frame)
 
     return np.array(frames)
 
 
-def read_random_frame(video_path):
+def read_random_frame(video_path, frame_count=None):
     """
     Read a random frame from any point in the video.
     """
     capture = cv2.VideoCapture(str(video_path))
-    frame_count = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    if frame_count is None:
+        frame_count = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
     # HACK: Some videos are missing the last 10 frames. No idea why.
     random_frame = int(random.random() * frame_count) - 10
     # Set to read specific frame
@@ -175,7 +177,7 @@ def plot_detections(img, detections, with_keypoints=True, figsize=(10, 10)):
         xmin = max(0, detections[i, 0])
         ymin = max(0, detections[i, 1])
         xmax = min(width, detections[i, 2])
-        ymax = min(width, detections[i, 3])
+        ymax = min(height, detections[i, 3])
 
         rect = patches.Rectangle((xmin, ymin), xmax - xmin, ymax - ymin,
                                  linewidth=1, edgecolor="r", facecolor="none")
@@ -245,3 +247,29 @@ def load_all_metadata():
 
     all_metadata = pd.concat(metadata_list)
     return all_metadata
+
+
+def bb_intersection_over_union(boxA, boxB):
+    # determine the (x, y)-coordinates of the intersection rectangle
+    xA = max(boxA[0], boxB[0])
+    yA = max(boxA[1], boxB[1])
+    xB = min(boxA[2], boxB[2])
+    yB = min(boxA[3], boxB[3])
+
+    # compute the area of intersection rectangle
+    interArea = abs(max((xB - xA, 0)) * max((yB - yA), 0))
+    if interArea == 0:
+        return 0
+    # compute the area of both the prediction and ground-truth
+    # rectangles
+    boxAArea = abs((boxA[2] - boxA[0]) * (boxA[3] - boxA[1]))
+    boxBArea = abs((boxB[2] - boxB[0]) * (boxB[3] - boxB[1]))
+
+    # compute the intersection over union by taking the intersection
+    # area and dividing it by the sum of prediction + ground-truth
+    # areas - the interesection area
+    iou = interArea / float(boxAArea + boxBArea - interArea)
+
+    # return the intersection over union value
+    return iou
+
