@@ -18,14 +18,16 @@ from .video_utils import read_frame
 
 class EasyMTCNN:
 
-    def __init__(self, path_pnet='pnet.pt', path_rnet='rnet.pt', path_onet='onet.pt'):
+    def __init__(self, path_pnet='pnet.pt', path_rnet='rnet.pt', path_onet='onet.pt', **kwargs):
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         self.detector = MTCNN(device=device, post_process=False,
-                              path_pnet=path_pnet, path_rnet=path_rnet, path_onet=path_onet)
+                              path_pnet=path_pnet, path_rnet=path_rnet, path_onet=path_onet,
+                             **kwargs)
 
     def detect(self, frame):
         img = PIL.Image.fromarray(frame)
-        detections, probabilities = self.detector.detect(img)
+        with torch.no_grad():
+            detections, probabilities = self.detector.detect(img)
         if detections is None or len(detections) == 0:
             return np.array([]).reshape(0, 5)
         dets_with_probs = np.append(detections, np.expand_dims(probabilities, axis=1), axis=1)
