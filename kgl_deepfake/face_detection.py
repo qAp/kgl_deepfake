@@ -192,10 +192,11 @@ def extract_faces_from_frame(frame, det, image_size=256, margin=20):
     '''
     Adpated from facenet_pytorch.
     '''
+    if len(det.shape) == 1: return torch.Tensor([])
     im, box_im = PIL.Image.fromarray(frame), det[:,:4]
     faces_im = []
     for i, box in enumerate(box_im):
         face = extract_face(im, box, image_size, margin)
         faces_im.append(face)
-    faces_im = torch.stack(faces_im)
+    faces_im = torch.Tensor([]) if not faces_im else torch.stack(faces_im)
     return faces_im
